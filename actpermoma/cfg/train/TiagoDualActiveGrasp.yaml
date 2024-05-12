@@ -1,0 +1,39 @@
+name: TiagoDualActiveGrasp
+
+params:
+  algo: 
+    name: ActiveGrasp
+
+  load_checkpoint: ${if:${...checkpoint},True,False} # flag which sets whether to load the checkpoint
+  load_path: ${...checkpoint} # path to the checkpoint to load
+
+  config:
+    name: ${resolve_default:${....train.name},${....experiment}}
+    device: ${....rl_device}
+    device_name: ${....rl_device}
+
+    quality_threshold: 0.8 # 0.85 TODO
+    window_size: 1
+    min_z_dist: 1.9 # 1.4
+    max_views: 30
+    min_gain: 25
+    gain_discount_fac: 0.9 # TODO
+    base_goals_radius_grasp: 0.75 # 0.8 radius of candidate goals around target object
+    base_goals_radius_ig: 1 # radius of candidate goals around target object
+    min_path_length: 0.3 # minimum path length to consider for weighting
+
+    momentum: 800
+    deadlock_theta: 0.0175 # 1 deg
+    gain_weighting: None  # '/dist**2', None
+    gain_weighting_factor: 0.5 # prob that information can be collected after grasp execution stage reached #   0.5,    1.0 (w_ig)
+    seen_theta_thresh: 0.78539816339 # np.pi/4
+    use_reachability: False
+    arm_activation_radius_base: 0.10 # 10 cms
+    arm_activation_radius_goal: 0.85 # 80 cm (~ dist to arm joint 5 when extended)
+    planner_2d: 'astar' # 'rrtstar'
+    steps_along_path: 5 # steps along path to take as next base_goal
+
+    prior_agents: null
+    n_epochs: 1
+    n_episodes: 30 # training
+    n_episodes_test: 100
