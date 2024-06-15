@@ -57,8 +57,9 @@ pip install -e .
 
 Left arm: [https://hessenbox.tu-darmstadt.de/getlink/fiLmB2dHKinaEvugZrNgcuxP/smaller_full_reach_map_gripper_left_grasping_frame_torso_False_0.05.pkl]
 Right arm: [https://hessenbox.tu-darmstadt.de/getlink/fiGe1B2vaHZdYZVHuovhze68/smaller_full_reach_map_gripper_right_grasping_frame_torso_False_0.05.pkl]
-```
-Download the reachability maps from the above links and place them in the reachability folder (<repo_root>/algos/reachability/<>)
+
+Download the reachability maps from the above links and place them in the reachability folder (<repo_root>/algos/reachability/<>).
+If you need to generate reachability maps for another robot, have a look at the repo: https://github.com/iROSA-lab/sampled_reachability_maps
 
 ## Launch
 - Activate the conda environment:
