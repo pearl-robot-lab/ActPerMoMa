@@ -1,6 +1,6 @@
 # Act*Per*MoMa
 
-Based on the research paper: **Active-Perceptive Motion Generation for Mobile Manipulation** [1] [[Paper](https://arxiv.org/abs/2310.00433)] [[Project site](https://sites.google.com/view/actpermoma?pli=1/)]
+Code for the research paper: **Active-Perceptive Motion Generation for Mobile Manipulation** [1] [[Paper](https://arxiv.org/abs/2310.00433)] [[Project site](https://sites.google.com/view/actpermoma?pli=1/)]
 
 <p float="left">
   <img src="actpermoma.gif" width="720"/>
@@ -9,12 +9,12 @@ Based on the research paper: **Active-Perceptive Motion Generation for Mobile Ma
 This code is an active perception pipeline for mobile manipulators with embodied cameras to grasp in cluttered and unscructured scenes.
 Specifically, it employs a receding horizon planning approach considering expected information gain and reachability of detected grasps.
 
-This repository contains RL-style environmets for the Tiago++ mobile manipulator and uses the NVIDIA Isaac Sim simulator (Adapted from OmniIsaacGymEnvs [2]).
+This repository contains a gym-style environment for the Tiago++ mobile manipulator and uses the NVIDIA Isaac Sim simulator (Adapted from OmniIsaacGymEnvs [2]).
 
 ## Installation
 
 __Requirements:__ The NVIDIA ISAAC Sim simulator requires a GPU with RT (RayTracing) cores. This typically means an RTX GPU. The recommended specs are provided [here](https://docs.omniverse.nvidia.com/app_isaacsim/app_isaacsim/requirements.html)
-In our experience, to run the Act*Per*MoMA pipeline, at least 32GB unified RAM are needed.
+Besides this, in our experience, to run the Act*Per*MoMA pipeline, at least 32GB CPU RAM is needed.
 
 ### Isaac Sim
 
@@ -22,7 +22,7 @@ In our experience, to run the Act*Per*MoMA pipeline, at least 32GB unified RAM a
 **Note:** This code was tested on isaac-sim **version 2022.2.0**. \
 [Troubleshooting](https://forums.developer.nvidia.com/t/since-2022-version-error-failed-to-create-change-watch-no-space-left-on-device/218198) (common error when starting up) 
 
-- As we use pinocchio [3], we need to disable isaac motion planning, because at the moment it is incompatible with pinocchio.
+- As we use pinocchio for kinematics [3], we need to disable isaac motion planning, because at the moment it is incompatible with pinocchio.
 In your isaac installation, edit the file isaac/ov/pkg/isaac_sim-2022.2.0/apps/omni.isaac.sim.python.kit and comment out lines 541 to 548.
 
 ### Conda Environment
@@ -45,7 +45,7 @@ git clone -b devel https://github.com/ethz-asl/vgn.git
 cd vgn
 pip install -e .
 ```
-Also download the network weights as data.zip from the (VGN repo)[https://github.com/ethz-asl/vgn] and put the folders models and urdfs inside the assets folder.
+Also download the network weights as data.zip from the VGN repo[https://github.com/ethz-asl/vgn] and put the folders models and urdfs inside the assets folder of vgn.
 
 ### robot_helpers
 ```
@@ -53,6 +53,12 @@ git clone https://github.com/mbreyer/robot_helpers
 cd robot_helpers
 pip install -e .
 ```
+### Add the robot reachability map
+
+Left arm: [https://hessenbox.tu-darmstadt.de/getlink/fiLmB2dHKinaEvugZrNgcuxP/smaller_full_reach_map_gripper_left_grasping_frame_torso_False_0.05.pkl]
+Right arm: [https://hessenbox.tu-darmstadt.de/getlink/fiGe1B2vaHZdYZVHuovhze68/smaller_full_reach_map_gripper_right_grasping_frame_torso_False_0.05.pkl]
+```
+Download the reachability maps from the above links and place them in the reachability folder (<repo_root>/algos/reachability/<>)
 
 ## Launch
 - Activate the conda environment:
