@@ -14,13 +14,9 @@ from actpermoma.utils.hydra_cfg.reformat import omegaconf_to_dict, print_dict
 from actpermoma.utils.task_util import initialize_task
 from actpermoma.envs.isaac_env_mushroom import IsaacEnvMushroom
 from actpermoma.algos.active_grasp import ActiveGraspAgent
-from actpermoma.algos.active_grasp_dist import ActiveGraspDistAgent
-from actpermoma.algos.active_grasp_sumviews import ActiveGraspSumViewsAgent
-from actpermoma.algos.active_grasp_traj import ActiveGraspTrajAgent
-from actpermoma.algos.active_grasp_basic import ActiveGraspBasicAgent
-# from actpermoma.algos.active_grasp_norm import ActiveGraspNormAgent
-# from actpermoma.algos.active_grasp_breyer import ActiveGraspBreyerAgent
-
+from actpermoma.algos.naive import NaiveAgent
+from actpermoma.algos.random import RandomAgent
+from actpermoma.algos.actpermoma import ActPerMoMaAgent
 # Use Mushroom RL library
 import torch
 import torch.nn as nn
@@ -108,12 +104,9 @@ def experiment(cfg: DictConfig = None, cfg_file_path: str = "", seed: int = 0, r
     sim_app_cfg_path = cfg.sim_app_cfg_path
     agent_params_cfg = cfg.train.params.config
     algo_map = {"ActiveGrasp": ActiveGraspAgent, 
-                "ActiveGraspDist": ActiveGraspDistAgent,
-                "ActiveGraspSumViews": ActiveGraspSumViewsAgent,
-                "ActiveGraspTraj": ActiveGraspTrajAgent,
-                "ActiveGraspBasic": ActiveGraspBasicAgent,}
-                # "ActiveGraspNorm": ActiveGraspNormAgent,
-                # "ActiveGraspBreyer": ActiveGraspBreyerAgent}
+                "ActPerMoMa": ActPerMoMaAgent,
+                "Naive": NaiveAgent,
+                "Random": RandomAgent}
     algo = algo_map[cfg.train.params.algo.name]
     algo_name = cfg.train.params.algo.name
 
@@ -154,7 +147,7 @@ def experiment(cfg: DictConfig = None, cfg_file_path: str = "", seed: int = 0, r
         logger.info(f'Experiment: {exp_name}, Algo{algo_name}-norm_function{norm_function}-use_reach{use_reach}')
 
         # Agent
-        if not cfg_dict["task"] is None and cfg_dict["task"]["name"] == 'TiagoDualActiveGrasp' or cfg_dict["task"]["name"] == 'TiagoDualActiveGraspTraj':
+        if not cfg_dict["task"] is None and cfg_dict["task"]["name"] == 'TiagoDualActivePerception' or cfg_dict["task"]["name"] == 'TiagoDualActivePerceptionNaive':
             # src: https://stackoverflow.com/questions/66295334/create-a-new-key-in-hydra-dictconfig-from-python-file
             OmegaConf.set_struct(agent_params_cfg, True)
             with open_dict(agent_params_cfg):

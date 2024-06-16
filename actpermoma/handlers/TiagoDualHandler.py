@@ -168,7 +168,7 @@ class TiagoDualHandler(TiagoBaseHandler):
     def _generate_camera(self):
         camera = Camera(prim_path=self.camera_path,
                         name=f"zed_camera",
-                        frequency=60)
+                        frequency=120)
 
         if camera.is_valid():
             camera.initialize()

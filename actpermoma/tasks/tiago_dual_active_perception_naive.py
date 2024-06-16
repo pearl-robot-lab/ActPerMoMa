@@ -29,7 +29,7 @@
 import torch
 import numpy as np
 from actpermoma.tasks.base.rl_task import RLTask
-from actpermoma.handlers.TiagoDualWBMotion202220Handler import TiagoDualWBHandler
+from actpermoma.handlers.TiagoDualNaiveHandler import TiagoDualHandler
 from omni.isaac.core.objects.cone import VisualCone
 from omni.isaac.core.prims import GeometryPrimView
 from actpermoma.tasks.utils import scene_utils
@@ -139,7 +139,7 @@ class TiagoDualActivePerceptionNaiveTask(RLTask):
         cx = self._task_cfg["env"]["cx"]
         cy = self._task_cfg["env"]["cy"]
         usd_path = (get_usd_path()/ 'tiago_dual_holobase_zed/tiago_dual_holobase_zed.usd').as_posix()
-        self.tiago_handler = TiagoDualWBHandler(move_group=self._move_group, use_torso=self._use_torso, sim_config=self._sim_config, num_envs=self._num_envs, device=self._device,
+        self.tiago_handler = TiagoDualHandler(move_group=self._move_group, use_torso=self._use_torso, sim_config=self._sim_config, num_envs=self._num_envs, device=self._device,
                                                 usd_path=usd_path, intrinsics=[self._task_cfg["env"]["fx"], self._task_cfg["env"]["fy"], cx, cy])
 
         # update observation space to add #pixels

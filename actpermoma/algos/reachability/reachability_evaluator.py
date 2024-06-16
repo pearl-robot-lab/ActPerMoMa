@@ -1,7 +1,7 @@
 import os
 import pickle
 import numpy as np
-from scipy import Rotation
+from scipy.spatial.transform import Rotation
 
 
 ########################################################################

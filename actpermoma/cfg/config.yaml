@@ -47,6 +47,8 @@ checkpoint: ''
 # number of seeds to run (run sequentially by default)
 num_seeds: 1
 
+# Optional - set to True to enable wandb logging
+wandb_activate: False
 
 
 # set the directory where the output files get saved

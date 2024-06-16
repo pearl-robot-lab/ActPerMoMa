@@ -206,11 +206,11 @@ class TiagoDualActivePerceptionTask(RLTask):
             scene.add(grasp_obj)
             self._grasp_objs_dimensions.append(scene.compute_object_AABB(grasp_obj.name)) # Axis aligned bounding box used as dimensions
         
-        # Optional viewport for rendering in a separate viewer
-        from omni.isaac.synthetic_utils import SyntheticDataHelper
-        self.viewport_api_window = get_viewport_from_window_name("Viewport")
-        self.sd_helper = SyntheticDataHelper()
-        self.sd_helper.initialize(sensor_names=["rgb"], viewport_api=self.viewport_api_window)
+        # # Optional viewport for rendering in a separate viewer
+        # from omni.isaac.synthetic_utils import SyntheticDataHelper
+        # self.viewport_api_window = get_viewport_from_window_name("Viewport")
+        # self.sd_helper = SyntheticDataHelper()
+        # self.sd_helper.initialize(sensor_names=["rgb"], viewport_api=self.viewport_api_window)
 
     def post_reset(self):
         # reset that takes place when the isaac world is reset (typically happens only once)
@@ -322,10 +322,11 @@ class TiagoDualActivePerceptionTask(RLTask):
 
     def get_render(self):
         # Get ground truth viewport rgb image
-        gt = self.sd_helper.get_groundtruth(
-            ["rgb"], self.viewport_window, verify_sensor_init=False, wait_for_sensor_data=0
-        )
-        return np.array(gt["rgb"][:, :, :3])
+        raise NotImplementedError
+        # gt = self.sd_helper.get_groundtruth(
+        #     ["rgb"], self.viewport_window, verify_sensor_init=False, wait_for_sensor_data=0
+        # )
+        # return np.array(gt["rgb"][:, :, :3])
     
     def pre_physics_step(self, actions) -> None:
         # actions (num_envs, num_action)

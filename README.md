@@ -19,16 +19,16 @@ Besides this, in our experience, to run the Act*Per*MoMA pipeline, at least 32GB
 ### Isaac Sim
 
 - Install isaac-sim on your PC by following the procedure outlined [here](https://docs.omniverse.nvidia.com/app_isaacsim/app_isaacsim/install_workstation.html\) \
-**Note:** This code was tested on isaac-sim **version 2022.2.0**. \
+**Note:** This code was tested on isaac-sim **version 2023.1.0-hotfix.1**. \
 [Troubleshooting](https://forums.developer.nvidia.com/t/since-2022-version-error-failed-to-create-change-watch-no-space-left-on-device/218198) (common error when starting up) 
 
-- As we use pinocchio for kinematics [3], we need to disable isaac motion planning, because at the moment it is incompatible with pinocchio.
-In your isaac installation, edit the file isaac/ov/pkg/isaac_sim-2022.2.0/apps/omni.isaac.sim.python.kit and comment out lines 541 to 548.
+- As we use pinocchio for kinematics [3], we may need to disable isaac motion planning, because at the moment it is incompatible with pinocchio.
+In your isaac installation, edit the file omni.isaac.sim.python.kit and comment out lula, motion planning.
 
 ### Conda Environment
 
 - Follow the isaac-sim python conda environment installation [here](https://docs.omniverse.nvidia.com/app_isaacsim/app_isaacsim/install_python.html#advanced-running-with-anaconda\) \
-Note that we use a modified version of the isaac-sim conda environment `actpermoma-2022.2.0` which needs to be used instead and is available at `env_2022.2.0.yaml`. Don't forget to source the `setup_conda_env.sh` script in the isaac-sim directory before running experiments. (You could also add it to the .bashrc)
+Note that we use a modified version of the isaac-sim conda environment `actpermoma` which needs to be used instead and is available at `env.yaml`. Don't forget to source the `setup_conda_env.sh` script in the isaac-sim directory before running experiments. (You could also add it to the .bashrc)
 
 ### Mushroom-RL
 Install our fork of the mushroom library [4]:
@@ -45,7 +45,7 @@ git clone -b devel https://github.com/ethz-asl/vgn.git
 cd vgn
 pip install -e .
 ```
-Also download the network weights as data.zip from the VGN repo[https://github.com/ethz-asl/vgn] and put the folders models and urdfs inside the assets folder of vgn.
+Also download the network weights from the VGN repo [https://drive.google.com/file/d/1J3cPjyVQ59LpcLZZrA7EfeV3xTmITchr] and place them inside `vgn/assets`.
 
 ### robot_helpers
 ```
@@ -58,17 +58,17 @@ pip install -e .
 Left arm: [https://hessenbox.tu-darmstadt.de/getlink/fiLmB2dHKinaEvugZrNgcuxP/smaller_full_reach_map_gripper_left_grasping_frame_torso_False_0.05.pkl]
 Right arm: [https://hessenbox.tu-darmstadt.de/getlink/fiGe1B2vaHZdYZVHuovhze68/smaller_full_reach_map_gripper_right_grasping_frame_torso_False_0.05.pkl]
 
-Download the reachability maps from the above links and place them in the reachability folder (<repo_root>/algos/reachability/<>).
-If you need to generate reachability maps for another robot, have a look at the repo: https://github.com/iROSA-lab/sampled_reachability_maps
+Download the reachability maps from the above links and place them in the reachability folder (<repo_root>/actpermoma/algos/reachability/<>).
+If you need to generate reachability maps for another robot, have a look at the repo: [https://github.com/iROSA-lab/sampled_reachability_maps]
 
 ## Launch
 - Activate the conda environment:
   ```
-  conda activate actpermoma-2022.2.0
+  conda activate actpermoma
   ```
 - source the isaac-sim conda_setup file:
   ```
-  source <PATH_TO_ISAAC_SIM>/isaac_sim-2022.2.0/setup_conda_env.sh
+  source <PATH_TO_ISAAC_SIM>/isaac_sim-2023.1.0-hotfix.1/setup_conda_env.sh
   ```
 - run the desired method:
   ```

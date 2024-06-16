@@ -28,7 +28,7 @@ from robot_helpers.perception import CameraIntrinsic
 from robot_helpers.spatial import Rotation, Transform
 
 # Whole Body robot handler for the dual-armed Tiago robot
-class TiagoDualWBHandler(TiagoBaseHandler):
+class TiagoDualHandler(TiagoBaseHandler):
     def __init__(self, move_group, use_torso, sim_config, num_envs, device, usd_path=None, intrinsics=None, voxel_size=0.10, motion_planner='pinocchio'):
                                                                                                                                             # 'lula'
         
@@ -166,7 +166,7 @@ class TiagoDualWBHandler(TiagoBaseHandler):
     def _generate_camera(self):
         camera = Camera(prim_path=self.camera_path,
                         name=f"zed_camera",
-                        frequency=60)
+                        frequency=120)
 
         if camera.is_valid():
             camera.initialize()
@@ -175,7 +175,7 @@ class TiagoDualWBHandler(TiagoBaseHandler):
             camera.add_semantic_segmentation_to_frame()
             camera.add_instance_id_segmentation_to_frame()
             camera.add_instance_segmentation_to_frame()
-            # camera.set_clipping_range(0.05, 4)
+            camera.set_clipping_range(0.05, 1000000.0)
             self.head_camera = camera
             if self.intrinsics is not None:
                 self.set_intrinsics(self.intrinsics)
@@ -297,8 +297,8 @@ class TiagoDualWBHandler(TiagoBaseHandler):
             self._stage,
             self.gripperPhysicsMaterialPath,
             density=None,
-            staticFriction=0.8,
-            dynamicFriction=0.7,
+            staticFriction=1.6,
+            dynamicFriction=1.4,
             restitution=0.0
         )
 
@@ -501,7 +501,7 @@ class TiagoDualWBHandler(TiagoBaseHandler):
         #https://forums.developer.nvidia.com/t/tutorial-lula-kinematics-world-pose-doesnt-update-doing-simulation/246436
         # extrinsic = torch.tensor(UsdGeom.Xformable(camera_prim).ComputeLocalToWorldTransform(Usd.TimeCode.Default()), device=self._device).T
         pos_head, quat_head = self.get_frame_pose('head_2_link')
-        extrinsic = TiagoDualWBHandler.pos_quat_to_hom(pos_head, quat_head) @ self._head_to_zed_tf
+        extrinsic = TiagoDualHandler.pos_quat_to_hom(pos_head, quat_head) @ self._head_to_zed_tf
 
         return torch.FloatTensor(extrinsic, device=self._device)
     
@@ -738,8 +738,8 @@ class TiagoDualWBHandler(TiagoBaseHandler):
             raise NotImplementedError('MotionPlanning with lula is currently not enabled')
 
         if zed:
-            zed_pose = TiagoDualWBHandler.pos_quat_to_hom(ee_pos, ee_quat) @ self._head_to_zed_tf
-            ee_pos, ee_quat = TiagoDualWBHandler.hom_to_pos_quat(zed_pose)
+            zed_pose = TiagoDualHandler.pos_quat_to_hom(ee_pos, ee_quat) @ self._head_to_zed_tf
+            ee_pos, ee_quat = TiagoDualHandler.hom_to_pos_quat(zed_pose)
 
         return ee_pos, ee_quat
 
@@ -790,8 +790,8 @@ class TiagoDualWBHandler(TiagoBaseHandler):
         # joint_state: (num_env, num_dof) tensor or ndarray; if given, will calculate ee pose for this joint state, otherwise for current joint state
         if frame == 'zed':
             frame = 'head_2_link'
-            des_head_2_pose = TiagoDualWBHandler.pos_quat_to_hom(des_pos, des_quat) @ np.linalg.inv(self._head_to_zed_tf)
-            des_pos, des_quat = TiagoDualWBHandler.hom_to_pos_quat(des_head_2_pose)
+            des_head_2_pose = TiagoDualHandler.pos_quat_to_hom(des_pos, des_quat) @ np.linalg.inv(self._head_to_zed_tf)
+            des_pos, des_quat = TiagoDualHandler.hom_to_pos_quat(des_head_2_pose)
 
         if joint_state is None:
             base_pos, _ = self.get_base_dof_values()

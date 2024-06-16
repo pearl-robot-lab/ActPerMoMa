@@ -1,7 +1,6 @@
 import numpy as np
 import torch
 import itertools
-from .numba_overloads import nb_unique
 from copy import deepcopy as cp
 import signal
 
@@ -78,7 +77,7 @@ def raycast_on_voxel_array_torch(
         # return voxel_indices
         return voxel_index_count, voxel_index_array
 
-
+# @jit(nopython=True)
 def ig_fn_parallel_jit(tsdf_grid, voxel_size, fx, fy, cx, cy, u_step, v_step, bbox_corners, self_bbox_min, self_bbox_max, T_task_base_np, view_nps, debug=False, vis=None, T=None):
     igs = []
     for view in view_nps:
@@ -130,14 +129,13 @@ def ig_fn_parallel_jit(tsdf_grid, voxel_size, fx, fy, cx, cy, u_step, v_step, bb
         )
         voxel_indices = voxel_index_array[:voxel_index_count]
 
-        # indices = np.unique(voxel_indices, axis=0)
-        indices = nb_unique(voxel_indices, axis=0)[0] # Jittable unique function from https://github.com/numba/numba/issues/7663#issuecomment-999196241
+        indices = np.unique(voxel_indices, axis=0)
 
         bbox_min = ((T_task_base_np[:3,:3] @ self_bbox_min)+T_task_base_np[:3,3]) / voxel_size
         bbox_max = ((T_task_base_np[:3,:3] @ self_bbox_max)+T_task_base_np[:3,3]) / voxel_size
         
         # Get indices of voxels within our pre-defined OBJECT bounding box
-        mask = np.all((indices > bbox_min) & (indices < bbox_max), axis=1) # Even Faster because jittable with overload
+        mask = np.all((indices > bbox_min) & (indices < bbox_max), axis=1) # Even faster if jitted with overload
         ig = indices[mask].shape[0]
 
         if debug:

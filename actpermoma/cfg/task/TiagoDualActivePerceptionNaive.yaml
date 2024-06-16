@@ -13,19 +13,18 @@ env:
   horizon: 30
 
   enableDebugVis: False
+  # Move group to be used
+  move_group: "arm_right" # String. Can be arm_left or arm_right
   use_torso: True # Use torso joint too
   randomize_robot_on_reset: False
   # Hybrid action space
-  continous_actions: 8 # (SE2 base pose, torso joint, head_joint_2 ~ depending on the 5D camera velocity output by the policy) 6DOF grasp pose  & best_base_rot AND in both cases theta_covered
+  continous_actions: 7 # (SE2 base pose, torso joint, head_joint_2 ~ depending on the 5D camera velocity output by the policy) 6DOF grasp pose & width
   discrete_actions: 2 # 0 or 1 (arm activation)
   # Set custom state and action space limits
   world_xy_radius: 2.0 # metres
-  scene_type: 'simple' # 'simple' or 'complex'
-  num_obstacles: 2 # can be tabular
-  num_grasp_objects: 6 # YCB objects
+  num_obstacles: 1 # table
+  num_grasp_objects: 5 # YCB objects
   action_xy_radius: 0.3 # position control # calculated from 0.1 m/s max with 3 s max time
-  occ_map_radius: 4.0 # metres
-  occ_map_cell_size: 0.08 # ).1 metres
   action_ang_lim: 3.14159265 # pi 
   action_head_2_center: -0.13 # possible movement from -0.98 to 0.72
   action_head_2_rad: 0.85 

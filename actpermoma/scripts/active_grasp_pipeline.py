@@ -17,18 +17,7 @@ from actpermoma.envs.isaac_env_mushroom import IsaacEnvMushroom
 from actpermoma.algos.active_grasp import ActiveGraspAgent
 from actpermoma.algos.naive import NaiveAgent
 from actpermoma.algos.random import RandomAgent
-from actpermoma.algos.actpermoma import ActPerMoMa
-#
-# from actpermoma.algos.active_grasp_dist import ActiveGraspDistAgent
-# from actpermoma.algos.active_grasp_sumviews import ActiveGraspSumViewsAgent
-# from actpermoma.algos.active_grasp_traj import ActiveGraspTrajAgent
-# from actpermoma.algos.active_grasp_basic import ActiveGraspBasicAgent
-# from actpermoma.algos.active_grasp_traj_norm import ActiveGraspTrajNormAgent
-# from actpermoma.algos.active_grasp_traj_breyer import ActiveGraspTrajBreyerAgent
-
-# (Optional) Logging with Weights & biases
-from actpermoma.utils.wandb_utils import wandbLogger
-
+from actpermoma.algos.actpermoma import ActPerMoMaAgent
 # Use Mushroom RL library
 import torch
 import torch.nn as nn
@@ -38,8 +27,6 @@ from mushroom_rl.core import Core, Logger
 from mushroom_rl.algorithms.actor_critic import *
 from mushroom_rl.utils.dataset import compute_J, parse_dataset
 from tqdm import trange
-
-# from experiment_launcher import run_experiment
 
 def parse_data_and_save(eval_dataset, results_dir, name_spc=None, wandb_logger=None):
     # eval_dataset is a list of tuples respresenting (s, a, r, s', absorbing, info, last); where s is a dict with keys 'tsdf', 'goal_pos', 'view_pos', 'view_theta', 'view_phi', 'obj_states', 'reset_agent'
@@ -121,12 +108,9 @@ def experiment(cfg: DictConfig = None, cfg_file_path: str = "", seed: int = 0, r
     sim_app_cfg_path = cfg.sim_app_cfg_path
     agent_params_cfg = cfg.train.params.config
     algo_map = {"ActiveGrasp": ActiveGraspAgent, 
-                "ActiveGraspDist": ActiveGraspDistAgent,
-                "ActiveGraspSumViews": ActiveGraspSumViewsAgent,
-                "ActiveGraspTraj": ActiveGraspTrajAgent,
-                "ActiveGraspBasic": ActiveGraspBasicAgent,
-                "ActiveGraspTrajNorm": ActiveGraspTrajNormAgent,
-                "ActiveGraspTrajBreyer": ActiveGraspTrajBreyerAgent}
+                "ActPerMoMa": ActPerMoMaAgent,
+                "Naive": NaiveAgent,
+                "Random": RandomAgent}
     algo = algo_map[cfg.train.params.algo.name]
     algo_name = cfg.train.params.algo.name
 
@@ -167,14 +151,19 @@ def experiment(cfg: DictConfig = None, cfg_file_path: str = "", seed: int = 0, r
         logger.info(f'Experiment: {exp_name}, Algo{algo_name}: ' + name_spec)
 
         exp_eval_dataset = list()  # This will be a list of dicts with datasets from every epoch
-        wandb_logger = wandbLogger(exp_config=cfg, run_name=logger._log_id, group_name=algo_name+'_'+exp_stamp) # Optional
-        if hasattr(cfg, 'short_name_spec'):
-            wandb_logger = wandbLogger(exp_config=cfg, group_name=algo_name+'_'+cfg.short_name_spec+'_'+exp_stamp)
+        if cfg.wandb_activate is True:
+            # (Optional) Logging with Weights & biases
+            from actpermoma.utils.wandb_utils import wandbLogger
+            wandb_logger = wandbLogger(exp_config=cfg, run_name=logger._log_id, group_name=algo_name+'_'+exp_stamp) # Optional
+            if hasattr(cfg, 'short_name_spec'):
+                wandb_logger = wandbLogger(exp_config=cfg, group_name=algo_name+'_'+cfg.short_name_spec+'_'+exp_stamp)
+            else:
+                wandb_logger = wandbLogger(exp_config=cfg, group_name=algo_name+'_'+exp_stamp) # Optional
         else:
-            wandb_logger = wandbLogger(exp_config=cfg, group_name=algo_name+'_'+exp_stamp) # Optional
+            wandb_logger = None
 
         # Agent
-        if not cfg_dict["task"] is None and 'TiagoDualActiveGrasp' in cfg_dict["task"]["name"]:
+        if not cfg_dict["task"] is None and cfg_dict["task"]["name"] == 'TiagoDualActivePerception' or cfg_dict["task"]["name"] == 'TiagoDualActivePerceptionNaive':
             # src: https://stackoverflow.com/questions/66295334/create-a-new-key-in-hydra-dictconfig-from-python-file
             OmegaConf.set_struct(agent_params_cfg, True)
             with open_dict(agent_params_cfg):

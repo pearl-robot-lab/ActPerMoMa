@@ -14,7 +14,7 @@ setup(
     author="Sophie Lueth & Snehal Jauhri",
     version="1.0.0",
     description="Active-Perceptive Motion Generation for Mobile Manipulation in NVIDIA Isaac Sim. Adapted from omniisaacgymenvs (https://github.com/NVIDIA-Omniverse/OmniIsaacGymEnvs)",
-    keywords=["robotics", "active percetion"],
+    keywords=["robotics", "active perception"],
     include_package_data=True,
     install_requires=INSTALL_REQUIRES,
     packages=find_packages("."),

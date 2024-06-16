@@ -19,7 +19,7 @@ from mushroom_rl.utils.viewer import ImageViewer
 
 RENDER_WIDTH = 1280 # 1600
 RENDER_HEIGHT = 720 # 900
-RENDER_DT = 1.0/60.0 # 60 Hz
+# RENDER_DT = 1.0/60.0 # 60 Hz # Unused
 
 class IsaacEnvMushroom(Environment):
     """ This class provides a base interface for connecting RL policies with task implementations.
@@ -47,8 +47,8 @@ class IsaacEnvMushroom(Environment):
         self._run_sim_rendering = ((not headless) or render) # tells the simulator to also perform rendering in addition to physics
         self._render = self._run_sim_rendering
 
-        # Optional ImageViewer
-        self._viewer = ImageViewer([RENDER_WIDTH, RENDER_HEIGHT], RENDER_DT)
+        # # Optional ImageViewer
+        # self._viewer = ImageViewer([RENDER_WIDTH, RENDER_HEIGHT], RENDER_DT)
         self.sim_frame_count = 0
 
     def set_task(self, task, backend="torch", sim_params=None, init_sim=True) -> None:
@@ -70,8 +70,9 @@ class IsaacEnvMushroom(Environment):
             if sim_params["use_gpu_pipeline"]:
                 self._device = sim_params["sim_device"]
 
+        # Set render_dt to 0.0 to speed up rendering
         self._world = World(
-            stage_units_in_meters=1.0, rendering_dt=RENDER_DT, backend=backend, sim_params=sim_params, device=self._device
+            stage_units_in_meters=1.0, rendering_dt=0.0, backend=backend, sim_params=sim_params, device=self._device
         )
         self._world.add_task(task)
         self._task = task
@@ -82,7 +83,7 @@ class IsaacEnvMushroom(Environment):
         self.action_space = self._task.action_space
         self.num_states = self._task.num_states # Optional
         self.state_space = self._task.state_space # Optional
-        gamma = self._task._gamma
+        gamma = 1.0
         horizon = self._task._max_episode_length
 
         # Create MDP info for mushroom
