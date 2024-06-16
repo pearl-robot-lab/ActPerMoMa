@@ -28,7 +28,7 @@ In your isaac installation, edit the file omni.isaac.sim.python.kit and comment 
 ### Conda Environment
 
 - Follow the isaac-sim python conda environment installation [here](https://docs.omniverse.nvidia.com/app_isaacsim/app_isaacsim/install_python.html#advanced-running-with-anaconda\) \
-Note that we use a modified version of the isaac-sim conda environment `actpermoma` which needs to be used instead and is available at `env.yaml`. Don't forget to source the `setup_conda_env.sh` script in the isaac-sim directory before running experiments. (You could also add it to the .bashrc)
+Note that we use a modified version of the isaac-sim conda environment `actpermoma` which needs to be used instead and is available at `env.yaml` in this repo. Don't forget to source the `setup_conda_env.sh` script in the isaac-sim directory before running experiments. (You could also add it to the .bashrc)
 
 ### Mushroom-RL
 Install our fork of the mushroom library [4]:
@@ -72,7 +72,7 @@ If you need to generate reachability maps for another robot, have a look at the 
   ```
 - run the desired method:
   ```
-  python actpermoma/scripts/active_grasp_pipeline.py task=TiagoDualActivePerception train=ActPerMoMa
+  python actpermoma/scripts/active_grasp_pipeline.py task=TiagoDualActivePerception train=TiagoDualActPerMoMa
   ```
 
 ## References
